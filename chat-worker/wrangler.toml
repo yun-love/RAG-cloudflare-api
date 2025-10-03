@@ -13,3 +13,9 @@ binding = "AI"
 # 重要：将 GitHub Secret 绑定到 Worker 的环境变量
 [vars]
 # 这里不需要直接写 OPENAI_API_KEY，我们将在 GitHub Actions 中处理
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true
+
+
+
