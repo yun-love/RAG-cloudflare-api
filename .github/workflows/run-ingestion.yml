@@ -1,7 +1,9 @@
-name: Run Ingestion Worker
+name: Run Ingestion via Webhook
 
+# 触发器：当收到一个 repository_dispatch 事件，且事件类型为 'run-ingestion' 时运行
 on:
-  workflow_dispatch: # 允许手动触发
+  repository_dispatch:
+    types: [run-ingestion]
 
 jobs:
   run-ingestion:
@@ -20,19 +22,17 @@ jobs:
         run: npm install -g wrangler
 
       - name: Deploy Ingestion Worker
-        id: deploy
+        # 每次都重新部署是为了确保使用的是最新的分块代码
         run: wrangler deploy --name ingestion-worker -c ./ingestion-worker/wrangler.toml
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       
       - name: Trigger Ingestion Worker
-        # 部署成功后，向其 URL 发送请求以启动任务
-        # 请将 URL 替换为您自己的 Worker URL
+        # 这个 curl 步骤现在是核心，它会启动 ingestion-worker
         run: |
           echo "Waiting for 10 seconds for worker to be available globally..."
           sleep 10
+          # 【重要】我们保留 curl 触发，因为 ingestion-worker 仍然是 HTTP 触发的
+          # 它会处理 R2 桶中的所有文件
           curl -X POST "https://ingestion-worker.a0313wwh12.workers.dev"
-          
-    # 最佳实践：为防止意外触发，您可以在 ingestion-worker 的代码中添加一个 secret key 验证
-    # curl -X POST "https://.../" -H "Authorization: Bearer <YOUR_SECRET_TRIGGER_KEY>"
