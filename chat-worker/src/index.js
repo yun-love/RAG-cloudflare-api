@@ -118,7 +118,7 @@ export default {
 
     } catch (error) {
       // 捕获所有其他可能的运行时错误
-      // 例如：请求的 body 不是有效的 JSON，网络连接问题，代码中的 bug 等
+      // 例如：请求的 body 不是有效的 JSON，网络连接问题，代码中的 bug 等 
       console.error("Caught a top-level exception in chat-worker:", error);
       
       // 返回一个通用的服务器内部错误响应
