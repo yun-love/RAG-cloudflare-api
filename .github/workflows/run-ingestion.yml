@@ -1,0 +1,38 @@
+name: Run Ingestion Worker
+
+on:
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  run-ingestion:
+    runs-on: ubuntu-latest
+    name: Deploy and Trigger Ingestion Worker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Wrangler CLI
+        run: npm install -g wrangler
+
+      - name: Deploy Ingestion Worker
+        id: deploy
+        run: wrangler deploy --name ingestion-worker -c ./ingestion-worker/wrangler.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      
+      - name: Trigger Ingestion Worker
+        # 部署成功后，向其 URL 发送请求以启动任务
+        # 请将 URL 替换为您自己的 Worker URL
+        run: |
+          echo "Waiting for 10 seconds for worker to be available globally..."
+          sleep 10
+          curl -X POST "https://ingestion-worker.<YOUR_SUBDOMAIN>.workers.dev"
+          
+    # 最佳实践：为防止意外触发，您可以在 ingestion-worker 的代码中添加一个 secret key 验证
+    # curl -X POST "https://.../" -H "Authorization: Bearer <YOUR_SECRET_TRIGGER_KEY>"

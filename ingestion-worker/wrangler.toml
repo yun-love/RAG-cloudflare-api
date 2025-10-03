@@ -1,0 +1,15 @@
+name = "ingestion-worker" # Worker 的名字
+main = "src/index.js"
+compatibility_date = "2024-05-15"
+
+# 绑定 R2, Vectorize 和 AI
+[[r2_buckets]]
+binding = "RAG_BUCKET"
+bucket_name = "my-rag-data" # 确保 R2 桶已创建
+
+[[vectorize]]
+binding = "VECTORIZE_INDEX"
+index_name = "my-rag-index" # 确保 Vectorize 索引已创建
+
+[ai]
+binding = "AI"
