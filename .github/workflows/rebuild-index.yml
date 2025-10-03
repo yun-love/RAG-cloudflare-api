@@ -1,0 +1,39 @@
+name: Rebuild Vectorize Index
+
+# 允许我们从 GitHub Actions 页面手动触发此工作流
+on:
+  workflow_dispatch:
+
+jobs:
+  rebuild-index:
+    runs-on: ubuntu-latest
+    name: Delete and Recreate Vectorize Index
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Wrangler CLI
+        run: npm install -g wrangler
+
+      - name: Delete Existing Index
+        # 【步骤 1】删除旧的索引
+        # 使用 --force 来避免交互式确认提示
+        run: wrangler vectorize delete my-rag-index --force
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        # continue-on-error: true 的作用是：如果索引一开始就不存在，删除命令会报错，
+        # 但我们不希望工作流因此中断，而是应该继续执行下一步的创建操作。
+        continue-on-error: true
+
+      - name: Create New Index
+        # 【步骤 2】创建一个新的、同名的空索引
+        run: wrangler vectorize create my-rag-index --dimensions=768 --metric=cosine
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
