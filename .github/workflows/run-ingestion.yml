@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "Waiting for 10 seconds for worker to be available globally..."
           sleep 10
-          curl -X POST "https://ingestion-worker.<YOUR_SUBDOMAIN>.workers.dev"
+          curl -X POST "https://ingestion-worker.a0313wwh12.workers.dev"
           
     # 最佳实践：为防止意外触发，您可以在 ingestion-worker 的代码中添加一个 secret key 验证
     # curl -X POST "https://.../" -H "Authorization: Bearer <YOUR_SECRET_TRIGGER_KEY>"
