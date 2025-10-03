@@ -46,7 +46,7 @@ export default {
         body: JSON.stringify({
           // 5. 【关键】指定您的代理所能识别的模型名称
           // 根据错误日志，这个名称很可能就是 "gemini-1.5-pro-latest"
-          "model": "gemini-1.5-pro-latest", 
+          "model": "gemini-2.5-flash", 
           "messages": [
             { "role": "user", "content": prompt }
           ],
