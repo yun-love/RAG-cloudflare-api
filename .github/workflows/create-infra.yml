@@ -1,0 +1,30 @@
+name: Create Cloudflare Infrastructure
+
+# 允许我们从 GitHub Actions 页面手动触发此工作流
+on:
+  workflow_dispatch:
+
+jobs:
+  create-vectorize-index:
+    runs-on: ubuntu-latest
+    name: Create Vectorize Index
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Wrangler CLI
+        run: npm install -g wrangler
+
+      - name: Create Vectorize Index
+        # 【核心命令】在这里执行创建索引的操作
+        # --dimensions=768 和 --metric=cosine 参数至关重要
+        run: wrangler vectorize create my-rag-index --dimensions=768 --metric=cosine
+        env:
+          # 使用您在仓库中已经设置好的 Secrets
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
