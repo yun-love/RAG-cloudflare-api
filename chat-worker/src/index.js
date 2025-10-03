@@ -64,7 +64,7 @@ export default {
     // 【重要】同样，请根据您模型的API文档来修改解析响应数据的代码
     // 答案可能在 responseData.choices[0].message.content
     // 或 responseData.generated_text
-    // 或其他地方
+    // 或其他地方 
     const answer = responseData.choices[0].message.content; // 这是一个示例，请务必修改
 
     return new Response(JSON.stringify({ answer: answer }), {
