@@ -52,7 +52,7 @@ export default {
           'Authorization': `Bearer ${PROXY_API_KEY}`,
         },
         body: JSON.stringify({
-          "model": "gemini-1.5-pro",
+          "model": "gemini-2.5-flash",
           "messages": [
             { "role": "user", "content": prompt }
           ],
